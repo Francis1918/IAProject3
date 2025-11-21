@@ -1,7 +1,8 @@
 from logic import *
-import itertools
 from truth_table import TruthTable
 from visualizer import Visualizer
+from matplotlib_visualizer import MatplotlibVisualizer
+from logic_simplifier import LogicSimplifier
 
 
 class LogicPuzzleSolver:
@@ -15,6 +16,8 @@ class LogicPuzzleSolver:
         self.symbols_dict = {}
         self.premises = []
         self.queries = []
+        self.matplotlib_viz = MatplotlibVisualizer()
+        self.simplifier = LogicSimplifier()
 
     def solve_puzzle(self, puzzle_data):
         """
@@ -46,6 +49,13 @@ class LogicPuzzleSolver:
 
         # Combinar todas las premisas en una base de conocimiento
         self.knowledge_base = And(*knowledge_sentences)
+
+        # Mostrar simplificación de la base de conocimiento
+        print("\n" + "=" * 80)
+        print("ANÁLISIS Y SIMPLIFICACIÓN (usando SymPy)")
+        print("=" * 80)
+        self.simplifier.display_analysis(self.knowledge_base,
+                                         "Base de Conocimiento Completa")
 
         # Mostrar preguntas
         print("\nPREGUNTAS A RESOLVER:")
@@ -91,6 +101,59 @@ class LogicPuzzleSolver:
         print("\n" + "=" * 80)
         visualizer = Visualizer()
         visualizer.create_summary(puzzle_data, self.queries, self)
+
+        # Mostrar estadísticas de la tabla
+        truth_table.display_statistics()
+
+        # Visualizaciones con matplotlib
+        print("\n" + "=" * 80)
+        print("VISUALIZACIONES AVANZADAS")
+        print("=" * 80)
+        print("\nGenerando visualizaciones con Matplotlib...")
+
+        # 1. Tabla de verdad colorida
+        df = truth_table.get_dataframe()
+        if df is not None:
+            self.matplotlib_viz.visualize_truth_table(df, "Tabla de Verdad - Visualización")
+
+        # 2. Distribución de resultados
+        queries_results = []
+        for query_data in self.queries:
+            query = query_data['query']
+            question = query_data['question']
+            result = self.check_entailment(query)
+            queries_results.append((question, result))
+
+        self.matplotlib_viz.visualize_results_distribution(
+            queries_results, "Resultados de las Consultas"
+        )
+
+        # 3. Modelos válidos
+        total_models = len(truth_table.table_data)
+        valid_models = len(truth_table.get_valid_models())
+        self.matplotlib_viz.visualize_valid_models_count(
+            total_models, valid_models, "Proporción de Modelos Válidos"
+        )
+
+        # 4. Frecuencia de símbolos
+        symbol_stats = truth_table.get_symbol_statistics()
+        if symbol_stats:
+            self.matplotlib_viz.visualize_symbol_frequency(
+                symbol_stats, "Frecuencia de Símbolos en Modelos Válidos"
+            )
+
+        # Preguntar si desea guardar las visualizaciones
+        if self.matplotlib_viz.ask_to_save():
+            self.matplotlib_viz.save_all_figures()
+            print("\n✓ Visualizaciones guardadas exitosamente.")
+
+        # Limpiar figuras para el próximo uso
+        self.matplotlib_viz.clear_figures()
+
+        # Opción para exportar a CSV
+        print("\n¿Deseas exportar la tabla de verdad a CSV? (s/n): ", end="")
+        if input().strip().lower() == 's':
+            truth_table.export_to_csv()
 
     def check_entailment(self, query):
         """
