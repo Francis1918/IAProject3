@@ -124,8 +124,8 @@ Punto de entrada del programa:
 - pip (gestor de paquetes de Python)
 
 ### Paso 1: Clonar o descargar el proyecto
-```bash
-cd C:\Users\bravo\PycharmProjects\IAPj3
+```
+https://github.com/Francis1918/IAProject3.git
 ```
 
 ### Paso 2: Crear un entorno virtual (opcional pero recomendado)
