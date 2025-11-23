@@ -1,360 +1,560 @@
-# 🧩 Solucionador de Rompecabezas Lógicos
-
-## 📋 Descripción
-
-Este proyecto es un **solucionador automático de rompecabezas lógicos** que utiliza lógica proposicional y tablas de verdad para resolver problemas de razonamiento deductivo. El sistema permite tanto usar ejemplos predefinidos como crear rompecabezas personalizados de forma interactiva.
-
-### Características principales:
-- ✅ Resolución de problemas lógicos mediante tablas de verdad
-- ✅ Sistema interactivo para crear rompecabezas personalizados
-- ✅ Visualizaciones avanzadas con **Matplotlib** (tablas coloreadas, gráficos)
-- ✅ Simplificación de expresiones lógicas con **SymPy** (CNF, DNF)
-- ✅ Análisis estadístico de modelos válidos con **Pandas**
-- ✅ Exportación de resultados a CSV
-- ✅ Guardado de visualizaciones en PNG
-
----
-
-## 📁 Estructura del Proyecto
+# Sistema de Resolución Lógica Proposicional
 
 ```
-IAPj3/
-│
-├── logic.py                      # Clases base de lógica proposicional
-├── logic_solver.py               # Motor principal de resolución
-├── truth_table.py                # Generador de tablas de verdad
-├── visualizer.py                 # Visualizador básico de resultados
-├── matplotlib_visualizer.py      # Visualizaciones avanzadas
-├── logic_simplifier.py           # Simplificación con SymPy
-├── input_handler.py              # Sistema de entrada interactiva
-├── examples.py                   # Ejemplos predefinidos
-├── main.py                       # Punto de entrada principal
-├── requirements.txt              # Dependencias del proyecto
-│
-├── resultados_de_visualizaciones/   # Gráficos guardados (PNG)
-└── tablas_de_verdad/                # Tablas exportadas (CSV)
+╔═══════════════════════════════════════════════════════════════╗
+║                                                               ║
+║   ∀x ∈ U : P(x) ⇒ Q(x)  |  ¬(A ∧ B) ≡ ¬A ∨ ¬B  |  ∃y : R(y) ║
+║                                                               ║
+╚═══════════════════════════════════════════════════════════════╝
 ```
 
----
+👥 Autores
 
-## 📄 Descripción de Archivos
+**Equipo de Desarrollo:**
 
-### Archivos Principales
+```
+┌─────────────────────────────────────────┐
+│  Bravo Francis                          │
+│  Freire Ismael                          │
+│  Pasquel Johann                         │
+│  Torres Jorge                           │
+└─────────────────────────────────────────┘
+```
 
-#### `logic.py`
-Contiene las **clases base** para representar sentencias lógicas:
-- `Sentence`: Clase base abstracta
-- `Symbol`: Símbolos proposicionales (variables booleanas)
-- `Not`: Negación lógica (¬)
-- `And`: Conjunción lógica (∧)
-- `Or`: Disyunción lógica (∨)
-- `Implication`: Implicación lógica (=>)
-- `Biconditional`: Bicondicional lógico (<=>)
-- `model_check()`: Algoritmo para verificar si una base de conocimiento implica una consulta
+**Institución:** Escuela Politécnica Nacional
+**Curso:** Inteligencia Artificial y Programación
+**Fecha:** Noviembre 2025
 
-#### `logic_solver.py`
-Motor principal del solucionador:
-- Carga y procesa rompecabezas lógicos
-- Construye la base de conocimiento a partir de premisas
-- Verifica implicaciones lógicas (entailment)
-- Coordina la generación de tablas de verdad
-- Integra visualizaciones y simplificaciones
-- Gestiona la exportación de resultados
+**Análisis y Resolución de Rompecabezas Lógicos mediante Tabla de Verdad**
 
-#### `truth_table.py`
-Generador de tablas de verdad:
-- Genera todas las combinaciones posibles de valores
-- Evalúa la base de conocimiento en cada modelo
-- Crea DataFrames de Pandas para análisis
-- Exporta tablas a CSV con timestamp
-- Calcula estadísticas sobre modelos válidos
-- Identifica modelos que satisfacen la base de conocimiento
+Sistema formal de resolución de problemas lógicos basado en **lógica proposicional** y **tablas de verdad**. Implementa un motor de inferencia completo que permite verificar la validez de conclusiones a partir de un conjunto de premisas mediante el método de **model checking**.
 
-#### `matplotlib_visualizer.py`
-Visualizaciones avanzadas con Matplotlib:
-- **Tabla de verdad colorizada**: Verde (verdadero), Rosa (falso)
-- **Gráfico de resultados**: Barras horizontales con resultados de consultas
-- **Gráfico de pastel**: Proporción de modelos válidos vs inválidos
-- **Gráfico de frecuencia**: Frecuencia de símbolos en modelos válidos
-- Sistema de guardado en carpeta `resultados_de_visualizaciones/`
+[![Python](https://img.shields.io/badge/Python-3.7+-blue.svg)](https://www.python.org/)
+[![License](https://img.shields.io/badge/License-Educational-green.svg)]()
 
-#### `logic_simplifier.py`
-Simplificación y análisis con SymPy:
-- Convierte expresiones propias a formato SymPy
-- Simplifica expresiones lógicas complejas
-- Convierte a **CNF** (Forma Normal Conjuntiva)
-- Convierte a **DNF** (Forma Normal Disyuntiva)
-- Muestra análisis completo de expresiones
+### Características Principales
 
-#### `input_handler.py`
-Sistema interactivo de entrada personalizada:
-- **Paso 1**: Descripción del problema
-- **Paso 2**: Definición de símbolos proposicionales
-- **Paso 3**: Creación de premisas (reglas lógicas)
-  - Implicaciones (Si A entonces B)
-  - Conjunciones (A y B)
-  - Disyunciones (A o B)
-  - Negaciones (No A)
-  - Bicondicionales (A si y solo si B)
-- **Paso 4**: Definición de preguntas a resolver
+```
+⊢ Resolución automática mediante tablas de verdad
+⊢ Motor de inferencia lógica (model checking)
+⊢ Soporte completo para operadores lógicos (¬, ∧, ∨, ⇒, ⇔)
+⊢ Interfaz web profesional con visualizaciones matemáticas
+⊢ Análisis de consistencia de bases de conocimiento
+⊢ Generación de modelos válidos
+```
 
-#### `visualizer.py`
-Visualizador básico de consola:
-- Muestra resumen textual de resultados
-- Presenta conclusiones de forma clara
+### Caso de Estudio: El Problema del Unicornio
 
-#### `examples.py`
-Ejemplos predefinidos:
-- **Ejemplo del Unicornio**: Problema clásico de lógica proposicional
-- Plantilla para agregar más ejemplos
+El sistema resuelve el clásico problema lógico:
 
-#### `main.py`
-Punto de entrada del programa:
-- Menú interactivo principal
-- Opción 1: Resolver ejemplo predefinido
-- Opción 2: Crear rompecabezas personalizado
-- Opción 3: Salir
+```
+Dado:
+  1. Si el unicornio es mítico ⇒ es inmortal
+  2. Si ¬mítico ⇒ (mamífero ∧ mortal)
+  3. (inmortal ∨ mamífero) ⇒ tiene cuernos
+  4. tiene cuernos ⇒ es mágico
 
----
+Demostrar:
+  ¿Es mítico?
+  ¿Es mágico?
+  ¿Tiene cuernos?
+```
+
+## 🏗️ Arquitectura del Sistema
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    CAPA DE PRESENTACIÓN                     │
+│  ┌──────────────────┐         ┌──────────────────┐         │
+│  │   index.html     │         │  proyecto3.py    │         │
+│  │  (Interfaz Web)  │         │ (CLI Interface)  │         │
+│  └────────┬─────────┘         └────────┬─────────┘         │
+└───────────┼──────────────────────────────┼──────────────────┘
+            │                              │
+┌───────────┼──────────────────────────────┼──────────────────┐
+│           │        CAPA LÓGICA           │                  │
+│           └──────────────┬───────────────┘                  │
+│                          │                                  │
+│              ┌───────────▼───────────┐                      │
+│              │      logic.py         │                      │
+│              │  ┌─────────────────┐  │                      │
+│              │  │ Symbol          │  │                      │
+│              │  │ Not, And, Or    │  │                      │
+│              │  │ Implication     │  │                      │
+│              │  │ Biconditional   │  │                      │
+│              │  │ model_check()   │  │                      │
+│              │  └─────────────────┘  │                      │
+│              └───────────────────────┘                      │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Flujo de Ejecución
+
+1. Definición de Símbolos
+   ↓
+2. Construcción de Base de Conocimiento ($KB$)
+   ↓
+3. Generación de Tabla de Verdad ($2^n $combinaciones)
+   ↓
+4. Evaluación de KB en cada modelo
+   ↓
+5. Model Checking (KB ⊨ Query)
+   ↓
+6. Presentación de Resultados
 
 ## 🚀 Instalación
 
 ### Requisitos Previos
-- Python 3.7 o superior
-- pip (gestor de paquetes de Python)
 
-### Paso 1: Clonar o descargar el proyecto
-```
-https://github.com/Francis1918/IAProject3.git
-```
-
-### Paso 2: Crear un entorno virtual (opcional pero recomendado)
 ```bash
-python -m venv .venv
-.venv\Scripts\activate
+Python 3.7+
+Navegador web moderno (Chrome, Firefox, Edge, Safari)
 ```
 
-### Paso 3: Instalar las dependencias
+### Instalación Rápida
+
 ```bash
-pip install -r requirements.txt
+# 1. Clonar el repositorio
+git clone https://github.com/tu-usuario/proyecto3-logica.git
+cd proyecto3-logica
+
+# 2. No se requieren dependencias externas para la versión web
+# Para la versión CLI, Python estándar es suficiente
 ```
 
-Las dependencias que se instalarán son:
-- **matplotlib** >= 3.7.0 - Visualizaciones gráficas
-- **pandas** >= 2.0.0 - Manejo de datos tabulares
-- **numpy** >= 1.24.0 - Computación numérica
-- **sympy** >= 1.12 - Matemática simbólica
-- **tabulate** >= 0.9.0 - Formateo de tablas en consola
+### Verificación de Instalación
+
+```bash
+# Verificar Python
+python --version  # Debe ser 3.7 o superior
+
+# Ejecutar versión CLI
+python proyecto3.py
+```
 
 ---
 
 ## 📖 Guía de Uso
 
-### Ejecución del Programa
+### Opción 1: Interfaz Web (Recomendado)
 
 ```bash
-python main.py
+# Abrir index.html en tu navegador
+# Doble clic en el archivo o:
+open index.html        # macOS
+start index.html       # Windows
+xdg-open index.html    # Linux
 ```
 
-### Opción 1: Resolver Ejemplo Predefinido
+**Funcionalidades:**
 
-Al seleccionar la opción 1, el programa resolverá el **Problema del Unicornio**:
+1. **Generar Tabla de Verdad**: Muestra todos los modelos válidos
+2. **Resolver Acertijo**: Ejecuta el model checking y muestra resultados
+3. **Visualizaciones**: Animaciones matemáticas en tiempo real
+4. **Estadísticas**: Análisis de consistencia de la KB
 
-**Premisas:**
-1. Si el unicornio es mítico, entonces es inmortal
-2. Si el unicornio no es mítico, entonces es un mamífero mortal
-3. Si el unicornio es inmortal o mamífero, entonces tiene cuernos
-4. El unicornio es mágico si tiene cuernos
+### Opción 2: Interfaz CLI
 
-**Preguntas:**
-- ¿Es mítico el unicornio?
-- ¿Es mágico el unicornio?
-- ¿Tiene cuernos el unicornio?
-
-El programa mostrará:
-1. Descripción del problema
-2. Símbolos definidos
-3. Premisas en lenguaje natural
-4. Análisis y simplificación con SymPy
-5. Tabla de verdad completa
-6. Resultados de las consultas
-7. Estadísticas de modelos válidos
-8. Visualizaciones gráficas interactivas
-
-### Opción 2: Crear Rompecabezas Personalizado
-
-Esta opción te guía paso a paso:
-
-#### **Paso 1: Descripción**
-```
-Descripción: Determinar las características de un dragón
+```bash
+python proyecto3.py
 ```
 
-#### **Paso 2: Definir Símbolos**
+**Salida esperada:**
+
 ```
-¿Deseas agregar un símbolo? (s/n): s
-Nombre del símbolo: vuela
-Descripción de 'vuela': El dragón puede volar
+--- TABLA DE VERDAD (Solo filas válidas/consistentes) ---
+Mítico | Inmortal | Mamífero | Mortal | Cuernos | Mágico | KB (Es válida?)
+------------------------------------------------------------------------
+True   | True     | False    | False  | True    | True   | True
+False  | False    | True     | True   | True    | True   | True
 
-¿Deseas agregar un símbolo? (s/n): s
-Nombre del símbolo: escupe_fuego
-Descripción de 'escupe_fuego': El dragón escupe fuego
+Nro de modelos donde la KB se cumple: 2
 
-¿Deseas agregar un símbolo? (s/n): n
-```
-
-#### **Paso 3: Crear Premisas**
-```
-¿Deseas agregar una premisa? (s/n): s
-Selecciona el tipo de premisa:
-  1. Implicación (Si... entonces...)
-  2. Conjunción (Y)
-  3. Disyunción (O)
-  4. Negación (No)
-  5. Bicondicional (Si y solo si)
-
-Elige una opción (1-5): 1
-
-Antecedente (el 'Si'):
-Nombre del símbolo: vuela
-¿Negar 'vuela'? (s/n): n
-
-Consecuente (el 'entonces'):
-Nombre del símbolo: escupe_fuego
-¿Negar 'escupe_fuego'? (s/n): n
-
-Descripción en lenguaje natural: Si el dragón vuela, entonces escupe fuego
+--- RESULTADOS DE INFERENCIA ---
+¿Se puede probar que es Mítico? False
+¿Se puede probar que es Mágico? True
+¿Se puede probar que tiene Cuernos? True
 ```
 
-#### **Paso 4: Definir Preguntas**
-```
-¿Deseas agregar una pregunta? (s/n): s
-¿Sobre qué símbolo es la pregunta?: vuela
-Formula la pregunta sobre 'vuela': ¿Puede volar el dragón?
+## 🔬 Documentación Técnica
+
+### `logic.py` - Motor de Lógica Proposicional
+
+#### Clases Principales
+
+##### 1. `Sentence` (Clase Base Abstracta)
+
+```python
+class Sentence():
+    def evaluate(self, model: dict) -> bool
+    def formula(self) -> str
+    def symbols(self) -> set
 ```
 
-### Opciones Posteriores a la Resolución
+**Métodos:**
 
-#### **Guardar Visualizaciones**
-```
-¿Deseas guardar las visualizaciones? (s/n): s
-```
-Se guardarán en `resultados_de_visualizaciones/` con timestamp:
-- `tabla_verdad_YYYYMMDD_HHMMSS.png`
-- `distribucion_resultados_YYYYMMDD_HHMMSS.png`
-- `modelos_validos_YYYYMMDD_HHMMSS.png`
-- `frecuencia_simbolos_YYYYMMDD_HHMMSS.png`
+- `evaluate(model)`: Evalúa la sentencia en un modelo dado
+- `formula()`: Retorna representación en string
+- `symbols()`: Retorna conjunto de símbolos
 
-#### **Exportar Tabla de Verdad**
+##### 2. `Symbol` - Símbolos Proposicionales
+
+```python
+Mi = Symbol("Mítico")
+I = Symbol("Inmortal")
 ```
-¿Deseas exportar la tabla de verdad a CSV? (s/n): s
+
+**Propósito:** Representa variables booleanas atómicas.
+
+##### 3. `Not` - Negación Lógica (¬)
+
+```python
+Not(Mi)  # ¬Mítico
 ```
-Se guardará en `tablas_de_verdad/tabla_verdad_YYYYMMDD_HHMMSS.csv`
+
+**Tabla de Verdad:**
+
+```
+P  | ¬P
+---|----
+1  | 0
+0  | 1
+```
+
+##### 4. `And` - Conjunción Lógica (∧)
+
+```python
+And(Ma, Mo)  # Mamífero ∧ Mortal
+```
+
+**Tabla de Verdad:**
+
+```
+P  Q | P∧Q
+-----|----
+1  1 | 1
+1  0 | 0
+0  1 | 0
+0  0 | 0
+```
+
+##### 5. `Or` - Disyunción Lógica (∨)
+
+```python
+Or(I, Ma)  # Inmortal ∨ Mamífero
+```
+
+**Tabla de Verdad:**
+
+```
+P  Q | P∨Q
+-----|----
+1  1 | 1
+1  0 | 1
+0  1 | 1
+0  0 | 0
+```
+
+##### 6. `Implication` - Implicación Lógica (⇒)
+
+```python
+Implication(Mi, I)  # Mítico ⇒ Inmortal
+```
+
+**Tabla de Verdad:**
+
+```
+P  Q | P⇒Q
+-----|----
+1  1 | 1
+1  0 | 0
+0  1 | 1
+0  0 | 1
+```
+
+**Equivalencia:** `P ⇒ Q ≡ ¬P ∨ Q`
+
+##### 7. `Biconditional` - Bicondicional Lógico (⇔)
+
+```python
+Biconditional(P, Q)  # P ⇔ Q
+```
+
+**Tabla de Verdad:**
+
+```
+P  Q | P⇔Q
+-----|----
+1  1 | 1
+1  0 | 0
+0  1 | 0
+0  0 | 1
+```
+
+#### Función Principal: `model_check()`
+
+```python
+def model_check(knowledge: Sentence, query: Sentence) -> bool
+```
+
+**Algoritmo:**
+
+```
+function MODEL-CHECK(KB, α):
+    symbols ← SYMBOLS(KB) ∪ SYMBOLS(α)
+    return CHECK-ALL(KB, α, symbols, {})
+
+function CHECK-ALL(KB, α, symbols, model):
+    if symbols is empty:
+        if KB is true in model:
+            return α is true in model
+        return true
+    else:
+        P ← FIRST(symbols)
+        rest ← REST(symbols)
+        return (CHECK-ALL(KB, α, rest, model ∪ {P=true}) and
+                CHECK-ALL(KB, α, rest, model ∪ {P=false}))
+```
+
+**Complejidad:** O(2^n) donde n = número de símbolos
+
+**Retorna:**
+
+- `True`: KB ⊨ query (la KB implica la query)
+- `False`: KB ⊭ query (la KB no implica la query)
 
 ---
 
-## 📊 Interpretación de Resultados
+### `proyecto3.py` - Implementación del Problema
+
+#### Estructura del Código
+
+```python
+# 1. DEFINICIÓN DE SÍMBOLOS
+Mi = Symbol("Mítico")
+I  = Symbol("Inmortal")
+Ma = Symbol("Mamífero")
+Mo = Symbol("Mortal")
+H  = Symbol("Cuernos")
+Mg = Symbol("Mágico")
+
+# 2. BASE DE CONOCIMIENTO
+knowledge = And(
+    Implication(Mi, I),                    # Axioma 1
+    Implication(Not(Mi), And(Ma, Mo)),     # Axioma 2
+    Implication(Or(I, Ma), H),             # Axioma 3
+    Implication(H, Mg)                     # Axioma 4
+)
+
+# 3. GENERACIÓN DE TABLA DE VERDAD
+def imprimir_tabla_verdad(kb, simbolos):
+    combinaciones = list(itertools.product([True, False], 
+                                          repeat=len(simbolos)))
+    for valores in combinaciones:
+        modelo = dict(zip([s.name for s in simbolos], valores))
+        es_verdad = kb.evaluate(modelo)
+        if es_verdad:
+            # Imprimir fila válida
+
+# 4. RESOLUCIÓN
+def resolver_preguntas():
+    es_mitico = model_check(knowledge, Mi)
+    es_magico = model_check(knowledge, Mg)
+    tiene_cuernos = model_check(knowledge, H)
+```
+
+#### Análisis de Complejidad
+
+```
+Símbolos: 6 (Mi, I, Ma, Mo, H, Mg)
+Combinaciones totales: 2^6 = 64
+Modelos válidos: 2
+
+Tiempo de ejecución: O(2^n × m)
+  donde n = número de símbolos
+        m = complejidad de evaluar KB
+```
+
+## 🦄 El Problema del Unicornio
+
+### Formalización Matemática
+
+**Símbolos:**
+
+```
+Mi : Mítico
+I  : Inmortal
+Ma : Mamífero
+Mo : Mortal
+H  : Cuernos
+Mg : Mágico
+```
+
+**Base de Conocimiento (KB):**
+
+```
+KB = (Mi ⇒ I) ∧ 
+     (¬Mi ⇒ (Ma ∧ Mo)) ∧ 
+     ((I ∨ Ma) ⇒ H) ∧ 
+     (H ⇒ Mg)
+```
+
+### Tabla de Verdad Completa
+
+```
+Mi | I  | Ma | Mo | H  | Mg | KB
+---|----|----|----|----|----|----|
+1  | 1  | 0  | 0  | 1  | 1  | 1  ✓
+0  | 0  | 1  | 1  | 1  | 1  | 1  ✓
+```
+
+**Modelos válidos:** 2 de 64 (3.125%)
+
+### Análisis de Resultados
+
+#### Query 1: ¿Es Mítico? (Mi)
+
+```
+Modelo 1: Mi = 1  ✓
+Modelo 2: Mi = 0  ✓
+
+Conclusión: KB ⊭ Mi (INDETERMINADO)
+```
+
+**Explicación:** Existen modelos válidos donde Mi es verdadero y falso.
+
+#### Query 2: ¿Es Mágico? (Mg)
+
+```
+Modelo 1: Mg = 1  ✓
+Modelo 2: Mg = 1  ✓
+
+Conclusión: KB ⊨ Mg (VERDADERO)
+```
+
+**Demostración:**
+
+```
+1. (I ∨ Ma) ⇒ H        [Axioma 3]
+2. En ambos modelos: I ∨ Ma = 1
+3. Por modus ponens: H = 1
+4. H ⇒ Mg              [Axioma 4]
+5. Por modus ponens: Mg = 1
+∴ KB ⊨ Mg
+```
+
+#### Query 3: ¿Tiene Cuernos? (H)
+
+```
+Modelo 1: H = 1  ✓
+Modelo 2: H = 1  ✓
+
+Conclusión: KB ⊨ H (VERDADERO)
+```
+
+**Demostración:**
+
+```
+Caso 1 (Mi = 1):
+  Mi ⇒ I           [Axioma 1]
+  I = 1
+  I ∨ Ma = 1
+  (I ∨ Ma) ⇒ H     [Axioma 3]
+  H = 1
+
+Caso 2 (Mi = 0):
+  ¬Mi ⇒ (Ma ∧ Mo)  [Axioma 2]
+  Ma = 1
+  I ∨ Ma = 1
+  (I ∨ Ma) ⇒ H     [Axioma 3]
+  H = 1
+
+∴ KB ⊨ H
+```
+
+### Conclusión Formal
+
+```
+⊢ KB ⊨ Mg  (El unicornio es mágico)
+⊢ KB ⊨ H   (El unicornio tiene cuernos)
+⊢ KB ⊭ Mi  (No se puede determinar si es mítico)
+```
+
+## 🎓 Conceptos Teóricos
+
+### Lógica Proposicional
+
+**Definición:** Sistema formal que estudia proposiciones y sus relaciones mediante conectivos lógicos.
+
+**Sintaxis:**
+
+```
+φ ::= p | ¬φ | (φ ∧ φ) | (φ ∨ φ) | (φ ⇒ φ) | (φ ⇔ φ)
+```
+
+**Semántica:**
+
+- Modelo: Asignación de valores de verdad a símbolos
+- Satisfacibilidad: ∃ modelo donde φ es verdadera
+- Validez: ∀ modelo, φ es verdadera
+- Consecuencia lógica: KB ⊨ α
+
+### Model Checking
+
+**Definición:** Método para verificar si KB ⊨ α mediante enumeración exhaustiva de modelos.
+
+**Teorema:**
+
+```
+KB ⊨ α ⟺ ∀ modelo M, si M ⊨ KB entonces M ⊨ α
+```
+
+**Propiedades:**
+
+- Correcto (sound)
+- Completo (complete)
+- Decidible
 
 ### Tabla de Verdad
-- **0** = Falso
-- **1** = Verdadero
-- **KB** = Base de Conocimiento (todas las premisas combinadas)
-- Las columnas adicionales muestran las consultas
 
-### Resultados de Consultas
-- **[VERDADERO]** - La KB implica necesariamente la consulta
-- **[FALSO]** - La KB implica necesariamente la negación de la consulta
-- **[INDETERMINADO]** - La KB no puede determinar el valor de la consulta
+**Definición:** Representación tabular de todas las posibles asignaciones de verdad.
 
-### Estadísticas
-- **Total de modelos posibles**: 2^n donde n es el número de símbolos
-- **Modelos que satisfacen KB**: Cuántos modelos hacen verdadera la base de conocimiento
-- **Porcentaje de validez**: Proporción de modelos válidos
+**Tamaño:** 2^n filas para n símbolos
 
-### Análisis SymPy
-- **Original**: Expresión tal como fue definida
-- **Simplificada**: Versión simplificada de la expresión
-- **CNF**: Forma Normal Conjuntiva (conjunción de disyunciones)
-- **DNF**: Forma Normal Disyuntiva (disyunción de conjunciones)
+**Uso:** Verificación de tautologías, contradicciones y contingencias.
 
----
+### 1. Optimizaciones
 
-## 🎯 Ejemplos de Uso
-
-### Ejemplo 1: Problema de Detectives
-```
-Símbolos:
-- culpable: El sospechoso es culpable
-- coartada: El sospechoso tiene coartada
-- evidencia: Hay evidencia contra el sospechoso
-
-Premisas:
-1. Si hay evidencia y no tiene coartada, entonces es culpable
-2. Hay evidencia
-3. No tiene coartada
-
-Pregunta: ¿Es culpable?
-Resultado: VERDADERO
+```python
+# Poda de búsqueda
+def model_check_optimized(kb, query):
+    # Early termination
+    # Caching de evaluaciones
+    # Heurísticas de ordenamiento
 ```
 
-### Ejemplo 2: Elegibilidad para Beca
-```
-Símbolos:
-- buen_promedio: Tiene buen promedio
-- bajos_recursos: Es de bajos recursos
-- beca: Recibe beca
+### 2. Nuevos Operadores
 
-Premisas:
-1. Si tiene buen promedio y es de bajos recursos, entonces recibe beca
-2. Tiene buen promedio
-3. Es de bajos recursos
-
-Pregunta: ¿Recibe beca?
-Resultado: VERDADERO
+```python
+class Xor(Sentence):  # Disyunción exclusiva
+class Nand(Sentence): # NAND
+class Nor(Sentence):  # NOR
 ```
 
----
+### 3. Resolución por Refutación
 
-## 🛠️ Tecnologías Utilizadas
+```python
+def resolution(kb, query):
+    # Convertir a CNF
+    # Aplicar regla de resolución
+    # Buscar cláusula vacía
+```
 
-| Tecnología | Versión | Propósito |
-|------------|---------|-----------|
-| Python | 3.7+ | Lenguaje de programación |
-| Matplotlib | 3.7.0+ | Visualizaciones gráficas |
-| Pandas | 2.0.0+ | Análisis de datos |
-| NumPy | 1.24.0+ | Computación numérica |
-| SymPy | 1.12+ | Matemática simbólica |
-| Tabulate | 0.9.0+ | Formato de tablas |
+### 4. Lógica de Primer Orden
 
----
-
-## 📝 Notas Importantes
-
-1. **Límite de Símbolos**: El programa puede manejar cualquier número de símbolos, pero ten en cuenta que el número de modelos crece exponencialmente (2^n). Para más de 10 símbolos, la generación puede ser lenta.
-
-2. **Visualizaciones**: Las visualizaciones de Matplotlib se muestran en ventanas interactivas. Cierra cada ventana para continuar con la siguiente.
-
-3. **Archivos de Salida**: Todos los archivos generados incluyen timestamp para evitar sobrescribir resultados anteriores.
-
-4. **Encoding**: Si experimentas problemas con caracteres especiales en la consola de Windows, considera usar una terminal con soporte UTF-8.
-
----
-
-## 🤝 Contribuciones
-
-Para agregar nuevos ejemplos predefinidos, edita `examples.py` siguiendo la estructura del ejemplo del unicornio.
-
----
-
-## 📧 Autores: Bravo Francis, Freire Ismael, Pasquel Johann, Torres Jorge
-
-Proyecto desarrollado para el curso de Inteligencia Artificial y Programación.
-
-**Fecha**: Noviembre 2025
-
----
-
-## 📄 Licencia
-
-Este proyecto es de uso educativo.
-
+```python
+class Predicate(Sentence):
+class Quantifier(Sentence):
+    # ∀x P(x)
+    # ∃x Q(x)
+```
