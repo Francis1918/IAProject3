@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Resolución Lógica Proposicional</title>
+    <link rel="icon" href="logic.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="logic.ico" type="image/x-icon">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0d0d0d;
+            --bg-secondary: #1a1a1a;
+            --bg-tertiary: #262626;
+            --text-primary: #ffffff;
+            --text-secondary: #b3b3b3;
+            --text-tertiary: #808080;
+            --accent: #ffffff;
+            --border: #333333;
+            --border-light: #404040;
+            --shadow: rgba(255, 255, 255, 0.05);
+        }
+
+        body {
+            font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Canvas para animaciones matemáticas */
+        #mathCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.15;
+        }
+
+        /* Grid de fondo matemático */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 60px 40px;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Header matemático */
+        header {
+            text-align: center;
+            margin-bottom: 80px;
+            position: relative;
+        }
+
+        .math-decoration {
+            position: absolute;
+            font-family: 'IBM Plex Mono', monospace;
+            color: var(--text-tertiary);
+            font-size: 0.9em;
+            opacity: 0.3;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .math-decoration:nth-child(1) { top: -30px; left: 10%; animation-delay: 0s; }
+        .math-decoration:nth-child(2) { top: -20px; right: 15%; animation-delay: 1s; }
+        .math-decoration:nth-child(3) { top: 100px; left: 5%; animation-delay: 2s; }
+        .math-decoration:nth-child(4) { top: 110px; right: 8%; animation-delay: 3s; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); opacity: 0.3; }
+            50% { transform: translateY(-15px); opacity: 0.5; }
+        }
+
+        h1 {
+            font-size: 3.8em;
+            font-weight: 300;
+            letter-spacing: -1px;
+            margin-bottom: 20px;
+            color: var(--text-primary);
+            font-family: 'IBM Plex Sans', sans-serif;
+            position: relative;
+            display: inline-block;
+        }
+
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+        }
+
+        .subtitle {
+            font-size: 1em;
+            color: var(--text-secondary);
+            font-weight: 400;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            font-family: 'IBM Plex Mono', monospace;
+        }
+
+        /* Sistema de Grid */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 400px 1fr;
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+
+        .card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            padding: 40px;
+            position: relative;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .card:hover::before {
+            opacity: 0.3;
+        }
+
+        .card:hover {
+            border-color: var(--border-light);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .card h2 {
+            font-size: 0.85em;
+            font-weight: 600;
+            margin-bottom: 30px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-family: 'IBM Plex Mono', monospace;
+            position: relative;
+            padding-bottom: 15px;
+        }
+
+        .card h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 1px;
+            background: var(--accent);
+        }
+
+        /* Símbolos */
+        .simbolos-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+
+        .simbolo-item {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            padding: 16px 20px;
+            font-family: 'IBM Plex Mono', monospace;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .simbolo-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 2px;
+            height: 100%;
+            background: var(--accent);
+            transform: scaleY(0);
+            transition: transform 0.3s;
+        }
+
+        .simbolo-item:hover::before {
+            transform: scaleY(1);
+        }
+
+        .simbolo-item:hover {
+            background: var(--bg-secondary);
+            border-color: var(--border-light);
+            transform: translateX(8px);
+        }
+
+        .simbolo-var {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-right: 15px;
+            display: inline-block;
+            min-width: 35px;
+        }
+
+        .simbolo-desc {
+            color: var(--text-secondary);
+            font-size: 0.95em;
+        }
+
+        /* Proposiciones */
+        .proposicion {
+            background: var(--bg-tertiary);
+            border-left: 2px solid var(--border-light);
+            padding: 24px;
+            margin: 20px 0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .proposicion::after {
+            content: '';
+            position: absolute;
+            left: -2px;
+            top: 0;
+            width: 2px;
+            height: 0;
+            background: var(--accent);
+            transition: height 0.3s;
+        }
+
+        .proposicion:hover::after {
+            height: 100%;
+        }
+
+        .proposicion:hover {
+            background: var(--bg-secondary);
+            transform: translateX(8px);
+        }
+
+        .prop-label {
+            display: inline-block;
+            color: var(--text-tertiary);
+            padding: 4px 0;
+            font-size: 0.75em;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-family: 'IBM Plex Mono', monospace;
+            letter-spacing: 2px;
+        }
+
+        .prop-text {
+            color: var(--text-secondary);
+            margin: 8px 0 12px 0;
+            font-size: 0.95em;
+            line-height: 1.6;
+        }
+
+        .formula {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 1.4em;
+            color: var(--text-primary);
+            margin-top: 12px;
+            padding: 16px 20px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            letter-spacing: 3px;
+            font-weight: 300;
+        }
+
+        /* Controles */
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 60px 0;
+        }
+
+        button {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+            padding: 18px 50px;
+            font-size: 0.85em;
+            font-weight: 500;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-family: 'IBM Plex Mono', sans-serif;
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-tertiary);
+            transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 0;
+        }
+
+        button:hover::before {
+            left: 0;
+        }
+
+        button:hover {
+            border-color: var(--accent);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            transform: translateY(-2px);
+        }
+
+        button span {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Sección de resultados */
+        .resultado-section {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            padding: 50px;
+            margin: 40px 0;
+            display: none;
+            animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .resultado-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+            opacity: 0.3;
+        }
+
+        .resultado-section.show {
+            display: block;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section-title {
+            font-size: 1.8em;
+            font-weight: 300;
+            text-align: center;
+            margin-bottom: 50px;
+            color: var(--text-primary);
+            letter-spacing: -0.5px;
+            position: relative;
+            padding-bottom: 20px;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 1px;
+            background: var(--accent);
+        }
+
+        /* Estadísticas */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .stat-box {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .stat-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--accent);
+            transform: scaleX(0);
+            transition: transform 0.3s;
+        }
+
+        .stat-box:hover::before {
+            transform: scaleX(1);
+        }
+
+        .stat-box:hover {
+            border-color: var(--border-light);
+            transform: translateY(-5px);
+        }
+
+        .stat-number {
+            font-size: 3em;
+            font-weight: 300;
+            color: var(--text-primary);
+            font-family: 'IBM Plex Mono', monospace;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 0.75em;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-family: 'IBM Plex Mono', monospace;
+        }
+
+        /* Tabla de verdad */
+        .tabla-container {
+            overflow-x: auto;
+            margin: 30px 0;
+            border: 1px solid var(--border);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: 'IBM Plex Mono', monospace;
+        }
+
+        thead {
+            background: var(--bg-tertiary);
+        }
+
+        th {
+            padding: 20px;
+            text-align: center;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.85em;
+            border-right: 1px solid var(--border);
+            color: var(--text-secondary);
+        }
+
+        th:last-child {
+            border-right: none;
+        }
+
+        tbody tr {
+            background: var(--bg-secondary);
+            transition: all 0.2s;
+            border-bottom: 1px solid var(--border);
+        }
+
+        tbody tr:hover {
+            background: var(--bg-tertiary);
+        }
+
+        td {
+            padding: 18px;
+            text-align: center;
+            border-right: 1px solid var(--border);
+            font-size: 1em;
+            font-weight: 400;
+        }
+
+        td:last-child {
+            border-right: none;
+        }
+
+        .true {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .false {
+            color: var(--text-tertiary);
+        }
+
+        /* Tarjetas de respuesta */
+        .respuestas-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .respuesta-card {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-light);
+            padding: 35px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .respuesta-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 1px solid var(--accent);
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .respuesta-card:hover::before {
+            opacity: 1;
+        }
+
+        .respuesta-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .respuesta-card.negativo {
+            border-color: var(--border);
+        }
+
+        .pregunta {
+            font-size: 1em;
+            font-weight: 400;
+            margin-bottom: 20px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .respuesta {
+            font-size: 1.6em;
+            font-weight: 300;
+            font-family: 'IBM Plex Mono', monospace;
+            color: var(--text-primary);
+            letter-spacing: 1px;
+        }
+
+        .respuesta-card.negativo .respuesta {
+            color: var(--text-tertiary);
+        }
+
+        /* Conclusión */
+        .conclusion {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            padding: 45px;
+            margin-top: 50px;
+            text-align: center;
+            position: relative;
+        }
+
+        .conclusion::before {
+            content: '∴';
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            font-size: 4em;
+            opacity: 0.1;
+            font-weight: 300;
+            font-family: 'IBM Plex Mono', monospace;
+        }
+
+        .conclusion h3 {
+            font-size: 1.2em;
+            margin-bottom: 25px;
+            color: var(--text-primary);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-weight: 500;
+            font-family: 'IBM Plex Mono', monospace;
+        }
+
+        .conclusion p {
+            font-size: 1.05em;
+            line-height: 1.9;
+            color: var(--text-secondary);
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .respuestas-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5em;
+            }
+
+            .container {
+                padding: 40px 20px;
+            }
+
+            .controls {
+                flex-direction: column;
+            }
+
+            button {
+                width: 100%;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 0;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--border-light);
+        }
+
+        /* Animación de carga */
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .loading {
+            animation: pulse 2s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="mathCanvas"></canvas>
+
+    <div class="container">
+        <header>
+            <div class="math-decoration">∀x ∈ U</div>
+            <div class="math-decoration">P(x) ⇒ Q(x)</div>
+            <div class="math-decoration">∃y : R(y)</div>
+            <div class="math-decoration">¬(A ∧ B) ≡ ¬A ∨ ¬B</div>
+            <h1>SISTEMA DE RESOLUCIÓN LÓGICA</h1>
+            <p class="subtitle">Análisis Proposicional · Tabla de Verdad</p>
+        </header>
+
+        <div class="main-grid">
+            <div class="card">
+                <h2>Símbolos</h2>
+                <div class="simbolos-grid">
+                    <div class="simbolo-item">
+                        <span class="simbolo-var">Mi</span>
+                        <span class="simbolo-desc">Mítico</span>
+                    </div>
+                    <div class="simbolo-item">
+                        <span class="simbolo-var">I</span>
+                        <span class="simbolo-desc">Inmortal</span>
+                    </div>
+                    <div class="simbolo-item">
+                        <span class="simbolo-var">Ma</span>
+                        <span class="simbolo-desc">Mamífero</span>
+                    </div>
+                    <div class="simbolo-item">
+                        <span class="simbolo-var">Mo</span>
+                        <span class="simbolo-desc">Mortal</span>
+                    </div>
+                    <div class="simbolo-item">
+                        <span class="simbolo-var">H</span>
+                        <span class="simbolo-desc">Cuernos</span>
+                    </div>
+                    <div class="simbolo-item">
+                        <span class="simbolo-var">Mg</span>
+                        <span class="simbolo-desc">Mágico</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Base de Conocimiento</h2>
+                <div class="proposicion">
+                    <span class="prop-label">AXIOMA 1</span>
+                    <div class="prop-text">Si es mítico, entonces es inmortal</div>
+                    <div class="formula">Mi ⇒ I</div>
+                </div>
+                <div class="proposicion">
+                    <span class="prop-label">AXIOMA 2</span>
+                    <div class="prop-text">Si no es mítico, entonces es mamífero y mortal</div>
+                    <div class="formula">¬Mi ⇒ (Ma ∧ Mo)</div>
+                </div>
+                <div class="proposicion">
+                    <span class="prop-label">AXIOMA 3</span>
+                    <div class="prop-text">Si es inmortal o mamífero, entonces tiene cuernos</div>
+                    <div class="formula">(I ∨ Ma) ⇒ H</div>
+                </div>
+                <div class="proposicion">
+                    <span class="prop-label">AXIOMA 4</span>
+                    <div class="prop-text">Si tiene cuernos, entonces es mágico</div>
+                    <div class="formula">H ⇒ Mg</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button onclick="generarTabla()">
+                <span>⊢ Generar Tabla de Verdad</span>
+            </button>
+            <button onclick="resolverAcertijo()">
+                <span>∴ Resolver Acertijo</span>
+            </button>
+        </div>
+
+        <div id="resultadoTabla" class="resultado-section">
+            <h2 class="section-title">Tabla de Verdad</h2>
+            <div class="stats" id="stats"></div>
+            <div class="tabla-container" id="tablaContainer"></div>
+        </div>
+
+        <div id="resultadoInferencia" class="resultado-section">
+            <h2 class="section-title">Resultados de Inferencia</h2>
+            <div class="respuestas-grid" id="respuestasContainer"></div>
+            <div class="conclusion">
+                <h3>Conclusión</h3>
+                <p id="conclusionTexto"></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Animación de fondo con partículas matemáticas
+        const canvas = document.getElementById('mathCanvas');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const symbols = ['∀', '∃', '∧', '∨', '¬', '⇒', '⊢', '⊨', '∴', '∵', '≡', '⊤', '⊥', 'α', 'β', 'γ', 'δ', 'λ', 'φ', 'ψ'];
+        const particles = [];
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.symbol = symbols[Math.floor(Math.random() * symbols.length)];
+                this.speed = 0.2 + Math.random() * 0.5;
+                this.opacity = 0.1 + Math.random() * 0.2;
+                this.size = 12 + Math.random() * 8;
+            }
+
+            update() {
+                this.y -= this.speed;
+                if (this.y < -50) {
+                    this.y = canvas.height + 50;
+                    this.x = Math.random() * canvas.width;
+                }
+            }
+
+            draw() {
+                ctx.font = `${this.size}px "IBM Plex Mono"`;
+                ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
+                ctx.fillText(this.symbol, this.x, this.y);
+            }
+        }
+
+        for (let i = 0; i < 40; i++) {
+            particles.push(new Particle());
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(particle => {
+                particle.update();
+                particle.draw();
+            });
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        // Implementación de la lógica proposicional
+        class Symbol {
+            constructor(name) {
+                this.name = name;
+            }
+
+            evaluate(model) {
+                return model[this.name];
+            }
+
+            symbols() {
+                return new Set([this.name]);
+            }
+        }
+
+        class Not {
+            constructor(operand) {
+                this.operand = operand;
+            }
+
+            evaluate(model) {
+                return !this.operand.evaluate(model);
+            }
+
+            symbols() {
+                return this.operand.symbols();
+            }
+        }
+
+        class And {
+            constructor(...conjuncts) {
+                this.conjuncts = conjuncts;
+            }
+
+            evaluate(model) {
+                return this.conjuncts.every(c => c.evaluate(model));
+            }
+
+            symbols() {
+                return new Set(this.conjuncts.flatMap(c => [...c.symbols()]));
+            }
+        }
+
+        class Or {
+            constructor(...disjuncts) {
+                this.disjuncts = disjuncts;
+            }
+
+            evaluate(model) {
+                return this.disjuncts.some(d => d.evaluate(model));
+            }
+
+            symbols() {
+                return new Set(this.disjuncts.flatMap(d => [...d.symbols()]));
+            }
+        }
+
+        class Implication {
+            constructor(antecedent, consequent) {
+                this.antecedent = antecedent;
+                this.consequent = consequent;
+            }
+
+            evaluate(model) {
+                return !this.antecedent.evaluate(model) || this.consequent.evaluate(model);
+            }
+
+            symbols() {
+                return new Set([...this.antecedent.symbols(), ...this.consequent.symbols()]);
+            }
+        }
+
+        // Definir símbolos
+        const Mi = new Symbol("Mi");
+        const I = new Symbol("I");
+        const Ma = new Symbol("Ma");
+        const Mo = new Symbol("Mo");
+        const H = new Symbol("H");
+        const Mg = new Symbol("Mg");
+
+        // Base de conocimiento
+        const knowledge = new And(
+            new Implication(Mi, I),
+            new Implication(new Not(Mi), new And(Ma, Mo)),
+            new Implication(new Or(I, Ma), H),
+            new Implication(H, Mg)
+        );
+
+        const simbolos = ["Mi", "I", "Ma", "Mo", "H", "Mg"];
+
+        function generarCombinaciones(n) {
+            const result = [];
+            const total = Math.pow(2, n);
+            for (let i = 0; i < total; i++) {
+                const combo = [];
+                for (let j = 0; j < n; j++) {
+                    combo.push(Boolean(i & (1 << j)));
+                }
+                result.push(combo);
+            }
+            return result;
+        }
+
+        function generarTabla() {
+            const combinaciones = generarCombinaciones(simbolos.length);
+            let modelosValidos = 0;
+            let html = '<table><thead><tr>';
+
+            simbolos.forEach(s => {
+                html += `<th>${s}</th>`;
+            });
+            html += '<th>KB</th></tr></thead><tbody>';
+
+            const filasValidas = [];
+
+            combinaciones.forEach(valores => {
+                const modelo = {};
+                simbolos.forEach((s, i) => {
+                    modelo[s] = valores[i];
+                });
+
+                const esValido = knowledge.evaluate(modelo);
+
+                if (esValido) {
+                    modelosValidos++;
+                    let fila = '<tr>';
+                    simbolos.forEach(s => {
+                        const valor = modelo[s];
+                        fila += `<td class="${valor ? 'true' : 'false'}">${valor ? '1' : '0'}</td>`;
+                    });
+                    fila += '<td class="true">1</td></tr>';
+                    filasValidas.push(fila);
+                }
+            });
+
+            html += filasValidas.join('') + '</tbody></table>';
+
+            document.getElementById('tablaContainer').innerHTML = html;
+            document.getElementById('stats').innerHTML = `
+                <div class="stat-box">
+                    <div class="stat-number">${combinaciones.length}</div>
+                    <div class="stat-label">Combinaciones</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number">${modelosValidos}</div>
+                    <div class="stat-label">Modelos Válidos</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number">${simbolos.length}</div>
+                    <div class="stat-label">Variables</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number">${((modelosValidos/combinaciones.length)*100).toFixed(1)}%</div>
+                    <div class="stat-label">Consistencia</div>
+                </div>
+            `;
+
+            document.getElementById('resultadoTabla').classList.add('show');
+            document.getElementById('resultadoTabla').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function modelCheck(knowledge, query) {
+            const allSymbols = [...knowledge.symbols()];
+            const combinaciones = generarCombinaciones(allSymbols.length);
+
+            for (let valores of combinaciones) {
+                const modelo = {};
+                allSymbols.forEach((s, i) => {
+                    modelo[s] = valores[i];
+                });
+
+                if (knowledge.evaluate(modelo) && !query.evaluate(modelo)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        function resolverAcertijo() {
+            const esMitico = modelCheck(knowledge, Mi);
+            const esMagico = modelCheck(knowledge, Mg);
+            const tieneCuernos = modelCheck(knowledge, H);
+
+            let html = '';
+
+            html += `
+                <div class="respuesta-card ${esMitico ? '' : 'negativo'}">
+                    <div class="pregunta">¿Se puede probar que es Mítico?</div>
+                    <div class="respuesta">${esMitico ? '⊤ VERDADERO' : '⊥ INDETERMINADO'}</div>
+                </div>
+            `;
+
+            html += `
+                <div class="respuesta-card ${esMagico ? '' : 'negativo'}">
+                    <div class="pregunta">¿Se puede probar que es Mágico?</div>
+                    <div class="respuesta">${esMagico ? '⊤ VERDADERO' : '⊥ FALSO'}</div>
+                </div>
+            `;
+
+            html += `
+                <div class="respuesta-card ${tieneCuernos ? '' : 'negativo'}">
+                    <div class="pregunta">¿Se puede probar que tiene Cuernos?</div>
+                    <div class="respuesta">${tieneCuernos ? '⊤ VERDADERO' : '⊥ FALSO'}</div>
+                </div>
+            `;
+
+            document.getElementById('respuestasContainer').innerHTML = html;
+
+            let conclusion = '';
+            if (esMagico && tieneCuernos) {
+                conclusion = 'Mediante el método de resolución por tabla de verdad, el sistema ha demostrado formalmente que el unicornio necesariamente posee cuernos (H ⊨ KB) y es mágico (Mg ⊨ KB). La propiedad de ser mítico (Mi) no puede ser determinada unívocamente, ya que tanto Mi como ¬Mi son consistentes con la base de conocimiento, resultando en múltiples modelos válidos que satisfacen todas las premisas establecidas.';
+            }
+
+            document.getElementById('conclusionTexto').textContent = conclusion;
+            document.getElementById('resultadoInferencia').classList.add('show');
+            document.getElementById('resultadoInferencia').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    </script>
+</body>
+</html>
