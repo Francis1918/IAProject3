@@ -1,4 +1,4 @@
-from logic import *
+from Python.logic import *
 import itertools
 
 # 1. Definición de Símbolos (Átomos)
